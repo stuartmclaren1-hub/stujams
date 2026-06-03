@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stu Jams</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0e0d0b;
+    --paper: #f5f0e8;
+    --accent1: #c8392b;
+    --accent2: #2563a8;
+    --accent3: #e8a020;
+    --accent4: #4a9e6b;
+    --grid: rgba(0,0,0,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Crimson Pro', serif;
+    font-size: 18px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .noise {
+    position: fixed;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  * { position: relative; z-index: 1; }
+
+  /* HEADER */
+  header {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    overflow: hidden;
+  }
+
+  .header-bg-text {
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 18vw, 220px);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(0,0,0,0.07);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    user-select: none;
+    animation: drift 20s ease-in-out infinite alternate;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  @keyframes drift {
+    from { transform: translate(-50%, -52%) rotate(-1deg); }
+    to   { transform: translate(-50%, -48%) rotate(1deg); }
+  }
+
+  .logo-wrap {
+    animation: fadeUp 1s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  h1.site-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 14vw, 180px);
+    letter-spacing: 0.04em;
+    line-height: 0.9;
+    color: var(--ink);
+  }
+
+  h1.site-title span.j { color: var(--accent1); }
+  h1.site-title span.a { color: var(--accent2); }
+  h1.site-title span.m { color: var(--accent3); }
+  h1.site-title span.s { color: var(--accent4); }
+
+  .tagline {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(10px, 1.8vw, 14px);
+    font-style: italic;
+    letter-spacing: 0.15em;
+    color: rgba(14,13,11,0.5);
+    margin-top: 0.5rem;
+    text-transform: lowercase;
+    animation: fadeUp 1s 0.3s ease both;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: rgba(14,13,11,0.35);
+    animation: bob 2s ease-in-out infinite;
+  }
+
+  @keyframes bob {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--paper);
+    border-bottom: 1.5px solid var(--ink);
+    padding: 0.8rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    mix-blend-mode: normal;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    color: var(--ink);
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent1); }
+
+  /* SECTIONS */
+  section {
+    padding: 6rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent1);
+    margin-bottom: 0.5rem;
+  }
+
+  h2.section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 7vw, 90px);
+    letter-spacing: 0.03em;
+    line-height: 0.95;
+    margin-bottom: 3rem;
+    color: var(--ink);
+  }
+
+  /* VIDEOS GRID */
+  .videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .video-card {
+    border: 1.5px solid var(--ink);
+    background: white;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .video-card:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+
+  .video-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .video-thumb .play-btn {
+    width: 54px;
+    height: 54px;
+    border: 2px solid white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 2;
+  }
+
+  .video-card:hover .play-btn { background: var(--accent1); border-color: var(--accent1); }
+
+  .play-btn svg { margin-left: 4px; }
+
+  .thumb-label {
+    position: absolute;
+    bottom: 0.6rem;
+    left: 0.6rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+  }
+
+  .thumb-color-1 { background: #1a1a2e; }
+  .thumb-color-2 { background: #2c1810; }
+  .thumb-color-3 { background: #0d2137; }
+  .thumb-color-4 { background: #1c1c1c; }
+  .thumb-color-5 { background: #1a0a2e; }
+  .thumb-color-6 { background: #0a1a1a; }
+
+  .video-info {
+    padding: 1rem 1.2rem;
+    border-top: 1.5px solid var(--ink);
+  }
+
+  .video-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    margin-bottom: 0.2rem;
+  }
+
+  .video-meta {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: rgba(14,13,11,0.45);
+    letter-spacing: 0.08em;
+  }
+
+  /* BLOG */
+  .blog-list { display: flex; flex-direction: column; gap: 0; }
+
+  .blog-item {
+    border-top: 1px solid rgba(14,13,11,0.2);
+    padding: 1.8rem 0;
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    align-items: start;
+    gap: 1.5rem;
+    transition: background 0.15s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .blog-item:last-child { border-bottom: 1px solid rgba(14,13,11,0.2); }
+
+  .blog-item:hover { background: rgba(200,57,43,0.04); }
+
+  .blog-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: rgba(14,13,11,0.4);
+    padding-top: 4px;
+  }
+
+  .blog-title {
+    font-family: 'Crimson Pro', serif;
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  .blog-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid currentColor;
+    white-space: nowrap;
+  }
+
+  .tag-music { color: var(--accent1); }
+  .tag-video { color: var(--accent2); }
+  .tag-thoughts { color: var(--accent4); }
+  .tag-biz { color: var(--accent3); }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    font-size: 20px;
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 1.2rem;
+  }
+
+  .about-text p strong {
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .about-visual {
+    position: relative;
+  }
+
+  .about-box {
+    border: 1.5px solid var(--ink);
+    padding: 2rem;
+    background: white;
+  }
+
+  .about-box-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 1rem;
+    letter-spacing: 0.04em;
+  }
+
+  .about-list {
+    list-style: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+
+  .about-list li {
+    padding: 0.6rem 0;
+    border-bottom: 0.5px solid rgba(14,13,11,0.15);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .about-list li:last-child { border-bottom: none; }
+  .about-list .val { color: var(--accent2); }
+
+  .corner-accent {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 60px;
+    height: 60px;
+    background: var(--accent1);
+    z-index: -1;
+  }
+
+  /* CONTACT */
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .contact-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 8vw, 110px);
+    line-height: 0.9;
+    letter-spacing: 0.03em;
+  }
+
+  .contact-big em {
+    font-style: normal;
+    color: var(--accent1);
+  }
+
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--ink);
+    background: transparent;
+    font-family: 'Crimson Pro', serif;
+    font-size: 17px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    resize: none;
+  }
+
+  .contact-form input:focus,
+  .contact-form textarea:focus {
+    border-color: var(--accent1);
+    background: rgba(200,57,43,0.03);
+  }
+
+  .contact-form input::placeholder,
+  .contact-form textarea::placeholder {
+    color: rgba(14,13,11,0.35);
+    font-style: italic;
+  }
+
+  .btn-send {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.15em;
+    padding: 0.8rem 2rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    align-self: flex-start;
+  }
+
+  .btn-send:hover { background: var(--accent1); }
+  .btn-send:active { transform: scale(0.97); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1.5px solid var(--ink);
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.06em;
+  }
+
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: rgba(14,13,11,0.4);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(14,13,11,0.5);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--accent1); }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    overflow: hidden;
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1.5px solid var(--ink);
+    padding: 0.6rem 0;
+    background: var(--ink);
+    margin: 0;
+  }
+
+  .marquee-track {
+    display: flex;
+    white-space: nowrap;
+    animation: marquee 18s linear infinite;
+  }
+
+  .marquee-track span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.12em;
+    color: var(--paper);
+    padding: 0 2rem;
+  }
+
+  .marquee-track span.dot {
+    color: var(--accent1);
+    padding: 0 0.5rem;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 700px) {
+    .about-grid, .contact-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .blog-item { grid-template-columns: 1fr; gap: 0.4rem; }
+    .blog-date { display: none; }
+    nav { flex-direction: column; gap: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+
+<!-- HEADER -->
+<header id="top">
+  <div class="header-bg-text" aria-hidden="true">STU JAMS STU JAMS STU JAMS</div>
+  <div class="logo-wrap">
+    <h1 class="site-title">STU <span class="j">J</span><span class="a">A</span><span class="m">M</span><span class="s">S</span></h1>
+    <p class="tagline">innovative solutions for your business needs.</p>
+  </div>
+  <p class="scroll-hint">↓ scroll ↓</p>
+</header>
+
+<!-- NAV -->
+<nav>
+  <a href="#top" class="nav-logo">STU JAMS</a>
+  <ul class="nav-links">
+    <li><a href="#videos">Videos</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track">
+    <span>MUSIC VIDEOS</span><span class="dot">✦</span>
+    <span>VLOGS</span><span class="dot">✦</span>
+    <span>BLOG</span><span class="dot">✦</span>
+    <span>INNOVATIVE SOLUTIONS</span><span class="dot">✦</span>
+    <span>MUSIC VIDEOS</span><span class="dot">✦</span>
+    <span>VLOGS</span><span class="dot">✦</span>
+    <span>BLOG</span><span class="dot">✦</span>
+    <span>INNOVATIVE SOLUTIONS</span><span class="dot">✦</span>
+    <span>MUSIC VIDEOS</span><span class="dot">✦</span>
+    <span>VLOGS</span><span class="dot">✦</span>
+    <span>BLOG</span><span class="dot">✦</span>
+    <span>INNOVATIVE SOLUTIONS</span><span class="dot">✦</span>
+    <span>MUSIC VIDEOS</span><span class="dot">✦</span>
+    <span>VLOGS</span><span class="dot">✦</span>
+    <span>BLOG</span><span class="dot">✦</span>
+    <span>INNOVATIVE SOLUTIONS</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<!-- VIDEOS -->
+<section id="videos">
+  <div class="reveal">
+    <p class="section-label">// latest drops</p>
+    <h2 class="section-title">Music<br>Videos</h2>
+  </div>
+  <div class="videos-grid reveal">
+    <a class="video-card" href="https://youtube.com/shorts/S7w31u-YMLU" target="_blank" style="text-decoration:none;display:block;">
+      <div class="video-thumb thumb-color-1" style="aspect-ratio:9/16; max-height:340px; text-decoration:none;">
+        <img src="https://img.youtube.com/vi/S7w31u-YMLU/hqdefault.jpg" alt="Stu Jams video thumbnail" style="width:100%;height:100%;object-fit:cover;opacity:0.7;">
+        <div class="play-btn" style="position:absolute;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M3 2l11 6-11 6V2z"/></svg>
+        </div>
+        <span class="thumb-label">Featured</span>
+      </div>
+      <div class="video-info">
+        <div class="video-title">Stu Jams</div>
+        <div class="video-meta">2026 · YouTube Short</div>
+      </div>
+    </a>
+    <div class="video-card">
+      <div class="video-thumb thumb-color-2">
+        <div class="play-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M3 2l11 6-11 6V2z"/></svg>
+        </div>
+        <span class="thumb-label">New</span>
+      </div>
+      <div class="video-info">
+        <div class="video-title">Add Your Video Title</div>
+        <div class="video-meta">2026 · 4:11</div>
+      </div>
+    </div>
+    <div class="video-card">
+      <div class="video-thumb thumb-color-3">
+        <div class="play-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M3 2l11 6-11 6V2z"/></svg>
+        </div>
+        <span class="thumb-label">Vlog</span>
+      </div>
+      <div class="video-info">
+        <div class="video-title">Add Your Video Title</div>
+        <div class="video-meta">2025 · 12:08</div>
+      </div>
+    </div>
+    <div class="video-card">
+      <div class="video-thumb thumb-color-4">
+        <div class="play-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M3 2l11 6-11 6V2z"/></svg>
+        </div>
+        <span class="thumb-label">Live</span>
+      </div>
+      <div class="video-info">
+        <div class="video-title">Add Your Video Title</div>
+        <div class="video-meta">2025 · 5:55</div>
+      </div>
+    </div>
+    <div class="video-card">
+      <div class="video-thumb thumb-color-5">
+        <div class="play-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M3 2l11 6-11 6V2z"/></svg>
+        </div>
+        <span class="thumb-label">Director's Cut</span>
+      </div>
+      <div class="video-info">
+        <div class="video-title">Add Your Video Title</div>
+        <div class="video-meta">2025 · 7:22</div>
+      </div>
+    </div>
+    <div class="video-card">
+      <div class="video-thumb thumb-color-6">
+        <div class="play-btn">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><path d="M3 2l11 6-11 6V2z"/></svg>
+        </div>
+        <span class="thumb-label">Acoustic</span>
+      </div>
+      <div class="video-info">
+        <div class="video-title">Add Your Video Title</div>
+        <div class="video-meta">2024 · 2:58</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section id="blog" style="border-top: 1.5px solid rgba(14,13,11,0.15);">
+  <div class="reveal">
+    <p class="section-label">// words & things</p>
+    <h2 class="section-title">The<br>Blog</h2>
+  </div>
+  <div class="blog-list reveal">
+    <a class="blog-item" href="#">
+      <div class="blog-date">Jun 2026</div>
+      <div class="blog-title">Add Your Post Title Here — Something Weird and Wonderful</div>
+      <span class="blog-tag tag-music">Music</span>
+    </a>
+    <a class="blog-item" href="#">
+      <div class="blog-date">May 2026</div>
+      <div class="blog-title">Add Your Post Title Here — Behind the Scenes of Something</div>
+      <span class="blog-tag tag-video">Video</span>
+    </a>
+    <a class="blog-item" href="#">
+      <div class="blog-date">Apr 2026</div>
+      <div class="blog-title">Add Your Post Title Here — Thoughts on the Creative Process</div>
+      <span class="blog-tag tag-thoughts">Thoughts</span>
+    </a>
+    <a class="blog-item" href="#">
+      <div class="blog-date">Mar 2026</div>
+      <div class="blog-title">Add Your Post Title Here — Innovative Solutions, Explained</div>
+      <span class="blog-tag tag-biz">Biz</span>
+    </a>
+    <a class="blog-item" href="#">
+      <div class="blog-date">Feb 2026</div>
+      <div class="blog-title">Add Your Post Title Here — Another Eclectic Dispatch</div>
+      <span class="blog-tag tag-music">Music</span>
+    </a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" style="border-top: 1.5px solid rgba(14,13,11,0.15);">
+  <div class="reveal">
+    <p class="section-label">// who is this person</p>
+    <h2 class="section-title">About<br>Stu</h2>
+  </div>
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <p>Tell your story here. What do you make? What drives you? What makes <strong>Stu Jams</strong> different from every other corner of the internet?</p>
+      <p>This is where you get weird. Get specific. Tell people why they should stick around — whether it's the music, the vlogs, the blog, or just the vibe.</p>
+      <p>Add a line or two about your background, your influences, your process, your obsessions.</p>
+    </div>
+    <div class="about-visual">
+      <div class="corner-accent"></div>
+      <div class="about-box">
+        <div class="about-box-title">STU<br>JAMS</div>
+        <ul class="about-list">
+          <li><span>Based in</span><span class="val">Your City</span></li>
+          <li><span>Genre(s)</span><span class="val">Everything</span></li>
+          <li><span>Est.</span><span class="val">2026</span></li>
+          <li><span>Vibe</span><span class="val">Eclectic + Weird</span></li>
+          <li><span>Tagline</span><span class="val">Innovative™</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="border-top: 1.5px solid rgba(14,13,11,0.15);">
+  <div class="contact-inner reveal">
+    <div>
+      <p class="section-label">// get in touch</p>
+      <div class="contact-big">Say<br><em>Hello.</em></div>
+    </div>
+    <form class="contact-form" onsubmit="return false;">
+      <input type="text" placeholder="your name" autocomplete="off">
+      <input type="email" placeholder="your email" autocomplete="off">
+      <textarea rows="5" placeholder="what's on your mind..."></textarea>
+      <button class="btn-send" type="submit">Send It ↗</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">STU JAMS</div>
+  <ul class="footer-links">
+    <li><a href="#">YouTube</a></li>
+    <li><a href="#">Instagram</a></li>
+    <li><a href="#">Spotify</a></li>
+  </ul>
+  <p class="footer-copy">© 2026 Stu Jams · Innovative Solutions for Your Business Needs.</p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => io.observe(r));
+</script>
+</body>
+</html>
